@@ -44,6 +44,10 @@
     "bin": "npc",
     "dirname": "next-porto-cli",
     "commands": "./dist/commands",
+    "additionalHelpFlags": [
+      "-h",
+      "--help"
+    ],
     "plugins": [
       "@oclif/plugin-help",
       "@oclif/plugin-plugins"

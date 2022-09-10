@@ -10,36 +10,48 @@ export class Container extends Command {
   static description = 'Create a container'
 
   // * get cli flags
-  // static flags = {
-  //   section: Flags.string({
-  //     char: 's',
-  //     description: 'Name of the application section.',
-  //     default: 'AppSection',
-  //     require: true,
-  //   }),
-  //   container: Flags.string({
-  //     char: 'c',
-  //     description: 'Name of the container.',
-  //     require: true,
-  //     dependsOn: ['section'],
-  //   }),
-  // }
+  static flags = {
+    section: Flags.string({
+      char: 's',
+      description: 'Name of the application section.',
+      default: 'AppSection',
+      require: true,
+    }),
+    container: Flags.string({
+      char: 'c',
+      description: 'Name of the container.',
+      require: true,
+      dependsOn: ['section'],
+      default: '',
+    }),
+  }
 
   // * run command
   async run(): Promise<void> {
     const {flags} = await this.parse(Container)
 
-    // * trigger manual prompt
-    const section = await CliUx.ux.prompt('Enter section name', {
-      default: 'AppSection',
-      required: true,
-    })
+    if (
+      !Object.keys(flags).includes('container') ||
+      ['', null, undefined].includes(flags.container)
+    ) {
+      // * trigger manual prompt
 
-    const container = await CliUx.ux.prompt('Enter container name', {
-      required: true,
-    })
+      // * section
+      const section = await CliUx.ux.prompt('Enter section name', {
+        default: 'AppSection',
+        required: true,
+      })
 
-    // *
-    console.log(containerScafffolding(section, container))
+      // * container
+      const container = await CliUx.ux.prompt('Enter container name', {
+        required: true,
+      })
+
+      // *
+      console.log(containerScafffolding(section, container))
+      this.exit(1)
+    }
+
+    console.log(containerScafffolding(flags.section, flags.container))
   }
 }
