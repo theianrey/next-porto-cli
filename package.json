@@ -1,0 +1,95 @@
+{
+  "name": "next-porto-cli",
+  "version": "0.1.0",
+  "description": "A cli for next.js to scaffold your application using porto architecture",
+  "author": "Ian Rey Gumba",
+  "bin": {
+    "npc": "./bin/run"
+  },
+  "homepage": "https://github.com/theianrey/next-porto-cli",
+  "license": "MIT",
+  "main": "dist/index.js",
+  "repository": "theianrey/next-porto-cli",
+  "files": [
+    "/bin",
+    "/dist",
+    "/npm-shrinkwrap.json",
+    "/oclif.manifest.json"
+  ],
+  "dependencies": {
+    "@oclif/core": "^1.13.10",
+    "@oclif/plugin-help": "^5",
+    "@oclif/plugin-plugins": "^2.0.1",
+    "module-alias": "^2.2.2",
+    "string-template-parser": "^1.2.6",
+    "zod": "^3.19.1"
+  },
+  "devDependencies": {
+    "@oclif/test": "^2",
+    "@types/chai": "^4",
+    "@types/mocha": "^9.0.0",
+    "@types/module-alias": "^2.0.1",
+    "@types/node": "^16.9.4",
+    "chai": "^4",
+    "eslint": "^7.32.0",
+    "eslint-config-oclif": "^4",
+    "eslint-config-oclif-typescript": "^1.0.2",
+    "globby": "^11",
+    "mocha": "^9",
+    "oclif": "^3",
+    "shx": "^0.3.3",
+    "ts-node": "^10.2.1",
+    "tslib": "^2.3.1",
+    "typescript": "~4.7.3"
+  },
+  "oclif": {
+    "bin": "npc",
+    "dirname": "next-porto-cli",
+    "commands": "./dist/commands",
+    "additionalHelpFlags": [
+      "-h",
+      "--help"
+    ],
+    "additionalVersionFlags": [
+      "-v",
+      "--version"
+    ],
+    "plugins": [
+      "@oclif/plugin-help"
+    ],
+    "topicSeparator": ":",
+    "topics": {
+      "create": {
+        "description": "Create the base boilerplate to your application"
+      },
+      "generate": {
+        "description": "Generate specific components for your app"
+      }
+    }
+  },
+  "scripts": {
+    "build": "shx rm -rf dist && tsc -b && shx cp -R src/stubs dist/stubs",
+    "lint": "eslint . --ext .ts --config .eslintrc",
+    "postpack": "shx rm -f oclif.manifest.json",
+    "posttest": "yarn lint",
+    "prepack": "yarn build && oclif manifest && oclif readme",
+    "test": "mocha --forbid-only \"test/**/*.test.ts\"",
+    "version": "oclif readme && git add README.md"
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "bugs": "https://github.com/theianrey/next-porto-cli/issues",
+  "keywords": [
+    "nextjs",
+    "porto",
+    "cli",
+    "scaffolding"
+  ],
+  "types": "dist/index.d.ts",
+  "_moduleAliases": {
+    "@loaders": "./dist/loaders",
+    "@helpers": "./dist/helpers",
+    "@stubs": "./dist/stubs"
+  }
+}
