@@ -1,6 +1,6 @@
 {
   "name": "next-porto-cli",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "A cli for next.js to scaffold your application using porto architecture",
   "author": "Ian Rey Gumba",
   "bin": {
@@ -21,12 +21,14 @@
     "@oclif/plugin-help": "^5",
     "@oclif/plugin-plugins": "^2.0.1",
     "module-alias": "^2.2.2",
-    "zod": "^3.19.0"
+    "string-template-parser": "^1.2.6",
+    "zod": "^3.19.1"
   },
   "devDependencies": {
     "@oclif/test": "^2",
     "@types/chai": "^4",
     "@types/mocha": "^9.0.0",
+    "@types/module-alias": "^2.0.1",
     "@types/node": "^16.9.4",
     "chai": "^4",
     "eslint": "^7.32.0",
@@ -48,19 +50,25 @@
       "-h",
       "--help"
     ],
+    "additionalVersionFlags": [
+      "-v",
+      "--version"
+    ],
     "plugins": [
-      "@oclif/plugin-help",
-      "@oclif/plugin-plugins"
+      "@oclif/plugin-help"
     ],
     "topicSeparator": ":",
     "topics": {
-      "container": {
-        "description": "all container commands"
+      "create": {
+        "description": "Create the base boilerplate to your application"
+      },
+      "generate": {
+        "description": "Generate specific components for your app"
       }
     }
   },
   "scripts": {
-    "build": "shx rm -rf dist && tsc -b",
+    "build": "shx rm -rf dist && tsc -b && shx cp -R src/stubs dist/stubs",
     "lint": "eslint . --ext .ts --config .eslintrc",
     "postpack": "shx rm -f oclif.manifest.json",
     "posttest": "yarn lint",
@@ -74,11 +82,14 @@
   "bugs": "https://github.com/theianrey/next-porto-cli/issues",
   "keywords": [
     "nextjs",
-    "porto"
+    "porto",
+    "cli",
+    "scaffolding"
   ],
   "types": "dist/index.d.ts",
   "_moduleAliases": {
-    "@helpers": "./src/helpers",
-    "@stubs": "./src/stubs"
+    "@loaders": "./dist/loaders",
+    "@helpers": "./dist/helpers",
+    "@stubs": "./dist/stubs"
   }
 }

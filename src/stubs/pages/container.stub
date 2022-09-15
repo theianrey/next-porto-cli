@@ -1,0 +1,7 @@
+import React from 'react';
+
+const {{containerName}}Page = (props) => {
+  return <h1>This is {{containerName}} page.</h1>;
+};
+
+export default {{containerName}}Page;

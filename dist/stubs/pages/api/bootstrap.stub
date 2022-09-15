@@ -1,0 +1,6 @@
+import {{containerName}}Api from '@Containers/{{containerName}}/pages/api/{{containerName|toLower}}';
+
+export default function handler(_req, res) {
+  // * Call your api class
+  return {{containerName}}Api.run(_req, res);
+}
