@@ -253,10 +253,6 @@ const getStylesPath = (_section: string, _container: string): string => {
   return path.join(getContainerPath(_section, _container), '/styles')
 }
 
-const getStubContent = async (_path: string): Promise<string> => {
-  return filesystem.readFile(_path)
-}
-
 export {
   containerScafffolding,
   getPath,
@@ -274,5 +270,4 @@ export {
   getHooksPath,
   getActionsPath,
   getStylesPath,
-  getStubContent,
 }
