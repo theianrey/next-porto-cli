@@ -1,13 +1,12 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getStubContent = exports.getStylesPath = exports.getActionsPath = exports.getHooksPath = exports.getHelpersPath = exports.getComponentsPath = exports.getConfigsPath = exports.getAssetsPath = exports.getApiPath = exports.getPagesPath = exports.getContainerPath = exports.getSectionPath = exports.getAppContainersPath = exports.getSrcPath = exports.getBasePath = exports.getPath = exports.containerScafffolding = void 0;
+exports.getStylesPath = exports.getActionsPath = exports.getHooksPath = exports.getHelpersPath = exports.getComponentsPath = exports.getConfigsPath = exports.getAssetsPath = exports.getApiPath = exports.getPagesPath = exports.getContainerPath = exports.getSectionPath = exports.getAppContainersPath = exports.getSrcPath = exports.getBasePath = exports.getPath = exports.containerScafffolding = void 0;
 /* eslint-disable @typescript-eslint/no-this-alias */
 /* eslint-disable unicorn/no-this-assignment */
 /* eslint-disable no-prototype-builtins */
 const zod_1 = require("zod");
 const path = require("node:path");
 const str = require("./string");
-const filesystem = require("./filesystem");
 const _ = require("lodash");
 // * context of parent this
 const _this = this;
@@ -235,7 +234,3 @@ const getStylesPath = (_section, _container) => {
     return path.join(getContainerPath(_section, _container), '/styles');
 };
 exports.getStylesPath = getStylesPath;
-const getStubContent = async (_path) => {
-    return filesystem.readFile(_path);
-};
-exports.getStubContent = getStubContent;

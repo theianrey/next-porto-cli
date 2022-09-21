@@ -182,5 +182,4 @@ declare const getActionsPath: (_section: string, _container: string) => string;
  * @returns string
  */
 declare const getStylesPath: (_section: string, _container: string) => string;
-declare const getStubContent: (_path: string) => Promise<string>;
-export { containerScafffolding, getPath, getBasePath, getSrcPath, getAppContainersPath, getSectionPath, getContainerPath, getPagesPath, getApiPath, getAssetsPath, getConfigsPath, getComponentsPath, getHelpersPath, getHooksPath, getActionsPath, getStylesPath, getStubContent, };
+export { containerScafffolding, getPath, getBasePath, getSrcPath, getAppContainersPath, getSectionPath, getContainerPath, getPagesPath, getApiPath, getAssetsPath, getConfigsPath, getComponentsPath, getHelpersPath, getHooksPath, getActionsPath, getStylesPath, };

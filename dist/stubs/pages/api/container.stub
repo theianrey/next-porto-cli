@@ -1,23 +1,5 @@
-import BaseApi from '@Ship/Base/Api';
-
-class {{containerName}}Api extends BaseApi {
-  private method;
-  private query;
-  protected response;
-
-  constructor(request, response) {
-    super(req, res)
-
-    const {method, query} = request;
-    this.method = method;
-    this.query = query;
-    this.response = response;
-  }
-
-  static run(req, res) {
-    this.getInstance(req, res);
-    return this.response.status(200).json({message: `This is {{containerName}} api route;`});
-  }
+const run = (request, response) => {
+  return response.status(200).json({message: 'This is a {{containerName}} api.'});
 }
 
-export default {{containerName}}Api;
+export {run};

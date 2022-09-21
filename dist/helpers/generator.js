@@ -20,8 +20,8 @@ const mapFilesContent = {
     hooks: '.gitkeep',
     actions: '.gitkeep',
     styles: '{{container}}.css',
-    pages: 'index.js',
-    api: '{{container}}.js',
+    pages: 'index.jsx',
+    api: 'index.js',
 };
 /**
  * Create files from paths
@@ -45,7 +45,6 @@ const generateFromPaths = async (_scaffoldPaths) => {
                         continue;
                     }
                     const callFuncString = pathKey === 'api' ? 'pagesApiGenerator' : `${pathKey}Generator`;
-                    // console.log({callFuncString})
                     // * run generator file
                     runGenerator(callFuncString, path);
                 }
@@ -78,7 +77,7 @@ exports.runGenerator = runGenerator;
 /**
  * Read stub template file
  * @param _stubPath path to template file
- * @returns void
+ * @returns string
  */
 const getStubContent = async (_stubPath) => {
     return filesystem.readFile(_stubPath);
@@ -281,13 +280,13 @@ const pagesApiGenerator = async (_path) => {
         const containerStubContent = await str.parseStub(await getStubContent(path.resolve(__dirname, '../stubs/pages/api/container.stub')), { containerName: _this.refScaffoldPaths.container }, {});
         // * create file for container
         await filesystem.write({
-            filename: mapFilesContent.api.replace('{{container}}', _this.refScaffoldPaths.container.toLowerCase()),
+            filename: mapFilesContent.api,
             path: path.resolve(_path, _this.refScaffoldPaths.container.toLowerCase()),
             content: containerStubContent,
         });
         // * create file for bootstrap
         await filesystem.write({
-            filename: mapFilesContent.api.replace('{{container}}', _this.refScaffoldPaths.container.toLowerCase()),
+            filename: mapFilesContent.api,
             path: path.join(path.resolve(process.cwd(), 'pages/api'), _this.refScaffoldPaths.container.toLowerCase()),
             content: bootstrapStubContent,
         });
