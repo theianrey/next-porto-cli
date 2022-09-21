@@ -1,6 +1,0 @@
-import * as {{containerName}}Api from '@Containers/{{containerName}}/pages/api/{{containerName|toLower}}';
-
-export default function handler(_req, _res) {
-  // * Run your api
-  return {{containerName}}Api.run(_req, _res);
-}

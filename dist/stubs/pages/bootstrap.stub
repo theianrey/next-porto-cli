@@ -1,3 +1,0 @@
-import {{containerName}}Page from '@Contianers/{{containerName}}/pages/{{containerName|toLower}}';
-
-export default {{containerName}}Page;

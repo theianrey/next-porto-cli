@@ -327,14 +327,28 @@ const pagesApiGenerator = async (_path: string): Promise<void> => {
 
     // * create file for container
     await filesystem.write({
+<<<<<<< HEAD
       filename: mapFilesContent.api,
+=======
+      filename: mapFilesContent.api.replace(
+        '{{container}}',
+        _this.refScaffoldPaths.container.toLowerCase()
+      ),
+>>>>>>> master
       path: path.resolve(_path, _this.refScaffoldPaths.container.toLowerCase()),
       content: containerStubContent,
     })
 
     // * create file for bootstrap
     await filesystem.write({
+<<<<<<< HEAD
       filename: mapFilesContent.api,
+=======
+      filename: mapFilesContent.api.replace(
+        '{{container}}',
+        _this.refScaffoldPaths.container.toLowerCase()
+      ),
+>>>>>>> master
       path: path.join(
         path.resolve(process.cwd(), 'pages/api'),
         _this.refScaffoldPaths.container.toLowerCase()
