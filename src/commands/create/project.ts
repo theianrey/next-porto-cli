@@ -5,7 +5,7 @@ import * as execa from 'execa'
 import * as path from 'node:path'
 import * as filesystem from '@helpers/filesystem'
 import {CliUx, Command, Flags} from '@oclif/core'
-import {checkConfigFile} from '@generators/config'
+import {generateConfig} from '@generators/config'
 import {shipScaffolding, getBasePath} from '@helpers/path'
 import {generateFromPaths, containerGenerator} from '@generators/index'
 
@@ -87,7 +87,6 @@ export default class Project extends Command {
           // * file check context set to true (default)
           _ctx.fileChecks = true
         },
-        enabled: (_ctx) => false,
       },
       {
         title: 'Initialize Next.js...',
@@ -124,16 +123,17 @@ export default class Project extends Command {
           await containerGenerator.appcontainersGenerator(
             path.resolve(getBasePath(_args.projectName), 'src', 'Containers'),
           )
+
+          _ctx.scaffolding = true
         },
         enabled: (ctx) => ctx.nextInit === true,
       },
       {
         title: 'Finishing up...',
         task: async (_ctx, task) => {
-          await checkConfigFile(path.resolve(getBasePath(_args.projectName)))
+          await generateConfig(path.resolve(getBasePath(_args.projectName)))
         },
-        enabled: (ctx) => true,
-        // enabled: (ctx) => ctx.scaffolding === true,
+        enabled: (_ctx) => _ctx.scaffolding === true,
       },
     ])
   }
