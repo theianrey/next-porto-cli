@@ -1,6 +1,6 @@
 import React from 'react';
 
-const {{containerName}}Page = (props) => {
+const {{containerName}}Page = () => {
   return <h1>This is {{containerName}} page.</h1>;
 };
 
