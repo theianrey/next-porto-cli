@@ -1,3 +1,3 @@
-import {{containerName}}Page from '@Contianers/{{containerName}}/pages/{{containerName|toLower}}';
+import {{containerName}}Page from '@Contianers/{{sectionName}}/{{containerName}}/pages/{{containerName|toLower}}';
 
 export default {{containerName}}Page;

@@ -1,22 +1,22 @@
+/* eslint-disable node/no-extraneous-import */
 /* eslint-disable @typescript-eslint/no-this-alias */
 /* eslint-disable unicorn/no-this-assignment */
 /* eslint-disable no-prototype-builtins */
 import {z} from 'zod'
 import * as path from 'node:path'
 import * as str from './string'
-import * as filesystem from './filesystem'
 import * as _ from 'lodash'
 
 // * context of parent this
 const _this: any = this
 
-// * scaffold object definition
-const ScaffoldObj = z.object({
+// * scaffold containers paths object definition
+const containerPathsObj = z.object({
   section: z.string(),
   container: z.string(),
   // * paths
   srcPath: z.string(),
-  appContainersPath: z.string(),
+  appContainersPath: z.string().optional(),
   sectionPath: z.string(),
   containerPath: z.string(),
   pagesPath: z.string(),
@@ -30,6 +30,16 @@ const ScaffoldObj = z.object({
   stylesPath: z.string(),
 })
 
+// * scaffold ship paths object definition
+const shipPatshObj = z.object({
+  hooks: z.string(),
+  config: z.string(),
+  layouts: z.string(),
+  styles: z.string(),
+  helpers: z.string(),
+  components: z.string(),
+})
+
 // * path object
 const PathObj = z.object({
   path: z.string(),
@@ -40,7 +50,9 @@ const PathObj = z.object({
 const ParamsObj = PathObj.pick({section: true, container: true})
 
 // * get type of scaffold object
-export type ScaffoldType = z.infer<typeof ScaffoldObj>
+export type ContainerPathsType = z.infer<typeof containerPathsObj>
+// *
+export type ShipPathsType = z.infer<typeof shipPatshObj>
 // * get type of path object
 export type PathType = z.infer<typeof PathObj>
 // * get type of params object
@@ -52,17 +64,16 @@ export type ParamsType = z.infer<typeof ParamsObj>
  *
  * @param section section name
  * @param container container name
- * @returns ScaffolType
+ * @returns ContainerPathsType
  */
 const containerScafffolding = (
   section: string,
-  container: string
-): ScaffoldType => {
+  container: string,
+): ContainerPathsType => {
   return {
     section,
     container,
     srcPath: getPath('src'),
-    appContainersPath: getAppContainersPath(),
     sectionPath: getPath('section', {section}),
     containerPath: getPath('container', {section, container}),
     pagesPath: getPath('pages', {section, container}),
@@ -78,6 +89,22 @@ const containerScafffolding = (
 }
 
 /**
+ * Scaffold the ship paths
+ * @param _projectDir string value for project directory [optional]
+ * @returns ShipPathsType
+ */
+const shipScaffolding = (_projectDir?: string): ShipPathsType => {
+  return {
+    hooks: path.resolve(getShipPath(_projectDir), 'Hooks'),
+    config: path.resolve(getShipPath(_projectDir), 'Config'),
+    layouts: path.resolve(getShipPath(_projectDir), 'Layouts'),
+    styles: path.resolve(getShipPath(_projectDir), 'Styles'),
+    helpers: path.resolve(getShipPath(_projectDir), 'Helpers'),
+    components: path.resolve(getShipPath(_projectDir), 'Components'),
+  }
+}
+
+/**
  * Get the path base on the section & container
  * @param _funcName function path short name
  * @param _params optional parameter for {section, container}
@@ -85,10 +112,6 @@ const containerScafffolding = (
  */
 const getPath = (_funcName: string, _params?: ParamsType): string => {
   // * format the function path string to proper case
-  // const capitalizeFunc = [
-  //   _funcName.toLowerCase().charAt(0).toUpperCase(),
-  //   _funcName.toLowerCase().slice(1),
-  // ].join('')
   const capitalizeFunc = _.capitalize(_funcName)
 
   // * for path short names
@@ -99,10 +122,10 @@ const getPath = (_funcName: string, _params?: ParamsType): string => {
     !(_this[callFuncString] instanceof Function)
   ) {
     // * empty string
-    throw new Error(`Invalid function call ${callFuncString}.`)
+    throw new Error(`Invalid function call "${callFuncString}".`)
   }
 
-  // * if params exists
+  // * if container params exists
   if (_params) {
     // * destruct optional params
     const {section, container} = _params
@@ -142,6 +165,15 @@ const getSrcPath = (): string => {
  */
 const getAppContainersPath = (): string => {
   return path.join(getSrcPath(), '/Containers')
+}
+
+/**
+ * Get ship path
+ * @param _projectDir string value of the project directory [optional]
+ * @returns string
+ */
+const getShipPath = (_projectDir?: string): string => {
+  return path.join(getBasePath(_projectDir), 'src', '/Ship')
 }
 
 /**
@@ -255,10 +287,12 @@ const getStylesPath = (_section: string, _container: string): string => {
 
 export {
   containerScafffolding,
+  shipScaffolding,
   getPath,
   getBasePath,
   getSrcPath,
   getAppContainersPath,
+  getShipPath,
   getSectionPath,
   getContainerPath,
   getPagesPath,
