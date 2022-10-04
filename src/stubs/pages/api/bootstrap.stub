@@ -1,6 +1,6 @@
-import * as {{containerName}}Api from '@Containers/{{sectionName}}/{{containerName}}/pages/api/{{containerName|toLower}}';
+import * as {{apiClass|capitalize}}Api from "@Containers/{{sectionName}}/{{containerName}}/pages/api/{{apiPath}}";
 
 export default function handler(_req, _res) {
   // * Run your api
-  return {{containerName}}Api.run(_req, _res);
+  return {{apiClass|capitalize}}Api.run(_req, _res);
 }

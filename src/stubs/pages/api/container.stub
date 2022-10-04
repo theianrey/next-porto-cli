@@ -1,5 +1,5 @@
 const run = (request, response) => {
-  return response.status(200).json({message: 'This is a {{containerName}} api.'});
+  return response.status(200).json({message: 'This is a {{apiClass|capitalize}} api.'});
 }
 
 export {run};

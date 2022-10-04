@@ -9,7 +9,7 @@ import * as path from 'node:path'
 import {CliUx} from '@oclif/core'
 import * as str from '@helpers/string'
 import * as filesystem from '@helpers/filesystem'
-import type {ContainerPathsType} from '@helpers/path'
+import type {ContainerPathsType, PagePathType} from '@helpers/path'
 
 // * Objects
 // * Types
@@ -36,7 +36,9 @@ const mapFilesContent = {
  * @param _paths object containing the file paths to scaffold
  * @returns void
  */
-const generateFromPaths = async (_paths: ContainerPathsType): Promise<void> => {
+const generateFromPaths = async (
+  _paths: ContainerPathsType | PagePathType,
+): Promise<void> => {
   // * reference to be used later
   _this.refContainersPaths = _paths
 
@@ -281,8 +283,8 @@ const pagesGenerator = async (_path: string): Promise<void> => {
       await getStubContent(
         path.resolve(__dirname, '../stubs/pages/container.stub'),
       ),
-      {containerName: _this.refContainersPaths.container},
-      {},
+      {pageClass: _path.slice(_path.lastIndexOf('/')).replace('/', '')},
+      {capitalize: (val: string) => _.capitalize(val)},
     )
 
     // * bootstrap stub content
@@ -291,19 +293,18 @@ const pagesGenerator = async (_path: string): Promise<void> => {
         path.resolve(__dirname, '../stubs/pages/bootstrap.stub'),
       ),
       {
-        containerName: _this.refContainersPaths.container,
+        pagePath: _path.split('pages/')[1],
+        pageClass: _path.slice(_path.lastIndexOf('/')).replace('/', ''),
         sectionName: _this.refContainersPaths.section,
+        containerName: _this.refContainersPaths.container,
       },
-      {toLower: (val: string) => _.toLower(val)},
+      {capitalize: (val: string) => _.capitalize(val)},
     )
 
     // * create file for container
     await filesystem.write({
       filename: mapFilesContent.pages,
-      path: path.resolve(
-        _path,
-        _this.refContainersPaths.container.toLowerCase(),
-      ),
+      path: _path,
       content: containerStubContent,
     })
 
@@ -311,8 +312,8 @@ const pagesGenerator = async (_path: string): Promise<void> => {
     await filesystem.write({
       filename: mapFilesContent.pages,
       path: path.join(
-        path.resolve(process.cwd(), 'pages'),
-        _this.refContainersPaths.container.toLowerCase(),
+        path.resolve(_path.slice(0, _path.lastIndexOf('src')), 'pages'),
+        _path.split('pages/')[1],
       ),
       content: bootstrapStubContent,
     })
@@ -335,10 +336,12 @@ const pagesApiGenerator = async (_path: string): Promise<void> => {
         path.resolve(__dirname, '../stubs/pages/api/bootstrap.stub'),
       ),
       {
-        containerName: _this.refContainersPaths.container,
+        apiClass: _path.slice(_path.lastIndexOf('/')).replace('/', ''),
+        apiPath: _path.split('pages/api/')[1],
         sectionName: _this.refContainersPaths.section,
+        containerName: _this.refContainersPaths.container,
       },
-      {toLower: (val: string) => _.toLower(val)},
+      {capitalize: (val: string) => _.capitalize(val)},
     )
 
     // * container stub content
@@ -346,17 +349,14 @@ const pagesApiGenerator = async (_path: string): Promise<void> => {
       await getStubContent(
         path.resolve(__dirname, '../stubs/pages/api/container.stub'),
       ),
-      {containerName: _this.refContainersPaths.container},
-      {},
+      {apiClass: _path.slice(_path.lastIndexOf('/')).replace('/', '')},
+      {capitalize: (val: string) => _.capitalize(val)},
     )
 
     // * create file for container
     await filesystem.write({
       filename: mapFilesContent.api,
-      path: path.resolve(
-        _path,
-        _this.refContainersPaths.container.toLowerCase(),
-      ),
+      path: _path,
       content: containerStubContent,
     })
 
@@ -364,8 +364,8 @@ const pagesApiGenerator = async (_path: string): Promise<void> => {
     await filesystem.write({
       filename: mapFilesContent.api,
       path: path.join(
-        path.resolve(process.cwd(), 'pages/api'),
-        _this.refContainersPaths.container.toLowerCase(),
+        path.resolve(_path.slice(0, _path.lastIndexOf('src')), 'pages/api'),
+        _path.split('pages/api/')[1],
       ),
       content: bootstrapStubContent,
     })
