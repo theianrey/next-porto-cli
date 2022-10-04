@@ -32,7 +32,7 @@ const generateFromPaths = async (_paths: ShipPathsType): Promise<void> => {
   _this.refContainersPaths = _paths
 
   // *
-  CliUx.ux.action.start('Creating files...')
+  // CliUx.ux.action.start('Creating files...')
   try {
     // * loop through the scaffold paths & create necessary files & directories
     for (const [key, path] of Object.entries(_paths)) {
@@ -55,7 +55,7 @@ const generateFromPaths = async (_paths: ShipPathsType): Promise<void> => {
   }
 
   // *
-  CliUx.ux.action.stop('Done.')
+  // CliUx.ux.action.stop('Done.')
 }
 
 /**
@@ -81,7 +81,7 @@ const runGenerator = async (
 // *
 const hooksGenerator = async (_path: string): Promise<void> => {
   try {
-    console.log('Generating hooks directory...')
+    // console.log('Generating hooks directory...')
     await filesystem.write({
       filename: mapFilesContent.hooks,
       path: _path,
@@ -95,7 +95,7 @@ const hooksGenerator = async (_path: string): Promise<void> => {
 // *
 const configGenerator = async (_path: string): Promise<void> => {
   try {
-    console.log('Generating config directory...')
+    // console.log('Generating config directory...')
     await filesystem.write({
       filename: mapFilesContent.config,
       path: _path,
@@ -109,7 +109,7 @@ const configGenerator = async (_path: string): Promise<void> => {
 // *
 const layoutsGenerator = async (_path: string): Promise<void> => {
   try {
-    console.log('Generating layouts directory...')
+    // console.log('Generating layouts directory...')
     await filesystem.write({
       filename: mapFilesContent.layouts,
       path: _path,
@@ -123,7 +123,7 @@ const layoutsGenerator = async (_path: string): Promise<void> => {
 // *
 const stylesGenerator = async (_path: string): Promise<void> => {
   try {
-    console.log('Generating styles directory...')
+    // console.log('Generating styles directory...')
     await filesystem.write({
       filename: mapFilesContent.styles,
       path: _path,
@@ -137,7 +137,7 @@ const stylesGenerator = async (_path: string): Promise<void> => {
 // *
 const helpersGenerator = async (_path: string): Promise<void> => {
   try {
-    console.log('Generating helpers directory...')
+    // console.log('Generating helpers directory...')
     await filesystem.write({
       filename: mapFilesContent.helpers,
       path: _path,
@@ -151,7 +151,7 @@ const helpersGenerator = async (_path: string): Promise<void> => {
 // *
 const componentsGenerator = async (_path: string): Promise<void> => {
   try {
-    console.log('Generating components directory...')
+    // console.log('Generating components directory...')
     await filesystem.write({
       filename: mapFilesContent.components,
       path: _path,

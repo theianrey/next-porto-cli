@@ -7,6 +7,12 @@ import * as path from 'node:path'
 import * as str from './string'
 import * as _ from 'lodash'
 
+/**
+ * ----------------------------------------------------------------------
+ */
+const distPath = path.dirname(require.main?.filename as string)
+export const PKG_ROOT = path.join(distPath, '../')
+
 // * context of parent this
 const _this: any = this
 
@@ -29,6 +35,14 @@ const containerPathsObj = z.object({
   actionsPath: z.string(),
   stylesPath: z.string(),
 })
+// * get type of scaffold object
+export type ContainerPathsType = z.infer<typeof containerPathsObj>
+
+const pagePathObj = containerPathsObj
+  .partial()
+  .pick({section: true, container: true, pagesPath: true, pagesApiPath: true})
+// *
+export type PagePathType = z.infer<typeof pagePathObj>
 
 // * scaffold ship paths object definition
 const shipPatshObj = z.object({
@@ -39,6 +53,8 @@ const shipPatshObj = z.object({
   helpers: z.string(),
   components: z.string(),
 })
+// *
+export type ShipPathsType = z.infer<typeof shipPatshObj>
 
 // * path object
 const PathObj = z.object({
@@ -46,15 +62,11 @@ const PathObj = z.object({
   section: z.string().optional(),
   container: z.string().optional(),
 })
-// * extract params object from path object
-const ParamsObj = PathObj.pick({section: true, container: true})
-
-// * get type of scaffold object
-export type ContainerPathsType = z.infer<typeof containerPathsObj>
-// *
-export type ShipPathsType = z.infer<typeof shipPatshObj>
 // * get type of path object
 export type PathType = z.infer<typeof PathObj>
+
+// * extract params object from path object
+const ParamsObj = PathObj.pick({section: true, container: true})
 // * get type of params object
 export type ParamsType = z.infer<typeof ParamsObj>
 
@@ -76,8 +88,6 @@ const containerScafffolding = (
     srcPath: getPath('src'),
     sectionPath: getPath('section', {section}),
     containerPath: getPath('container', {section, container}),
-    pagesPath: getPath('pages', {section, container}),
-    pagesApiPath: getPath('api', {section, container}),
     assetsPath: getPath('assets', {section, container}),
     configsPath: getPath('configs', {section, container}),
     componentsPath: getPath('components', {section, container}),
@@ -85,6 +95,14 @@ const containerScafffolding = (
     hooksPath: getPath('hooks', {section, container}),
     actionsPath: getPath('actions', {section, container}),
     stylesPath: getPath('styles', {section, container}),
+    pagesPath: path.resolve(
+      getPath('pages', {section, container}),
+      container.toLowerCase(),
+    ),
+    pagesApiPath: path.resolve(
+      getPath('api', {section, container}),
+      container.toLowerCase(),
+    ),
   }
 }
 
@@ -285,6 +303,7 @@ const getStylesPath = (_section: string, _container: string): string => {
   return path.join(getContainerPath(_section, _container), '/styles')
 }
 
+export const APP_ROOT = path.resolve(getBasePath())
 export {
   containerScafffolding,
   shipScaffolding,

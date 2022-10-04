@@ -34,7 +34,7 @@ export default class Container extends Command {
     }),
     force: Flags.boolean({
       char: 'f',
-      description: 'To execute the command even the container already exists.',
+      description: 'Override the existing container files',
       required: false,
       default: false,
     }),
