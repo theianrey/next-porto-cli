@@ -1,15 +1,16 @@
+/* eslint-disable node/no-extraneous-import */
 import 'module-alias/register'
-import type {ScaffoldType} from '@helpers/path'
-import {Command, CliUx, Flags} from '@oclif/core'
-import {containerScafffolding} from '@helpers/path'
-import {fileExist, forceDelete} from '@helpers/filesystem'
-import {generateFromPaths} from '@helpers/generator'
 import * as _ from 'lodash'
+import {Command, CliUx, Flags} from '@oclif/core'
+import {generateFromPaths} from '@generators/index'
+import {containerScafffolding} from '@helpers/path'
+import type {ContainerPathsType} from '@helpers/path'
+import {fileExist, forceDelete} from '@helpers/filesystem'
 
 /**
  * Container command class
  */
-export class Container extends Command {
+export default class Container extends Command {
   // * disable variable argument validation
   static strict = false
 
@@ -33,7 +34,7 @@ export class Container extends Command {
     }),
     force: Flags.boolean({
       char: 'f',
-      description: 'To execute the command even the container already exists.',
+      description: 'Override the existing container files',
       required: false,
       default: false,
     }),
@@ -42,7 +43,7 @@ export class Container extends Command {
   // * run command
   async run(): Promise<void> {
     // *
-    let scaffoldPaths: ScaffoldType | null = null
+    let scaffoldPaths: ContainerPathsType | null = null
 
     // * get user input for flags
     const {flags} = await this.parse(Container)
@@ -74,7 +75,7 @@ export class Container extends Command {
     if (scaffoldPaths === null) {
       scaffoldPaths = containerScafffolding(
         flags.section,
-        _.capitalize(flags.container)
+        _.capitalize(flags.container),
       )
     }
 
@@ -87,7 +88,7 @@ export class Container extends Command {
     // * override exisitng container
     if (fileExist(scaffoldPaths.containerPath) && flags.force) {
       const deleteExistingContainer = await CliUx.ux.confirm(
-        'This will delete the exisitng container and all of its content, continue?'
+        'This will delete the exisitng container and all of its content, continue?',
       )
 
       // * delete container

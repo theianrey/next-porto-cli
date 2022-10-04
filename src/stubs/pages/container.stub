@@ -1,7 +1,7 @@
 import React from 'react';
 
-const {{containerName}}Page = (props) => {
-  return <h1>This is {{containerName}} page.</h1>;
+const {{pageClass|capitalize}}Page = () => {
+  return <h1>This is {{pageClass|capitalize}} page.</h1>;
 };
 
-export default {{containerName}}Page;
+export default {{pageClass|capitalize}}Page;

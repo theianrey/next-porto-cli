@@ -1,11 +1,17 @@
+/* eslint-disable @typescript-eslint/no-this-alias */
+/* eslint-disable unicorn/no-this-assignment */
+/* eslint-disable node/no-extraneous-import */
+/* eslint-disable no-prototype-builtins */
+/* eslint-disable unicorn/prefer-module */
 import 'module-alias/register'
-import {z} from 'zod'
 import * as _ from 'lodash'
-import * as str from './string'
 import * as path from 'node:path'
 import {CliUx} from '@oclif/core'
-import type {ScaffoldType} from './path'
-import * as filesystem from './filesystem'
+import {getPath, PKG_ROOT} from '@helpers/path'
+import * as str from '@helpers/string'
+import {checkConfigFile} from './config'
+import * as filesystem from '@helpers/filesystem'
+import type {ContainerPathsType, PagePathType} from '@helpers/path'
 
 // * Objects
 // * Types
@@ -15,38 +21,45 @@ const _this: any = this
 
 // * files to generate in a container
 const mapFilesContent = {
+  appcontainers: '.gitkeep',
   assets: '.gitkeep',
-  configs: '-config.js',
+  configs: '-config.{{ext}}s',
   components: '.gitkeep',
   helpers: '.gitkeep',
   hooks: '.gitkeep',
   actions: '.gitkeep',
   styles: '{{container}}.css',
-  pages: 'index.jsx',
-  api: 'index.js',
+  pages: 'index.{{ext}}sx',
+  api: 'index.{{ext}}s',
+}
+
+const checkExt = async (): Promise<string> => {
+  const configFile = await checkConfigFile(path.resolve(getPath('src')))
+
+  return configFile.toLowerCase().includes('jsonconfig') ? 'j' : 't'
 }
 
 /**
  * Create files from paths
- * @param _scaffoldPaths object containing the file paths to scaffold
+ * @param _paths object containing the file paths to scaffold
  * @returns void
  */
 const generateFromPaths = async (
-  _scaffoldPaths: ScaffoldType
+  _paths: ContainerPathsType | PagePathType,
 ): Promise<void> => {
   // * reference to be used later
-  _this.refScaffoldPaths = _scaffoldPaths
+  _this.refContainersPaths = _paths
 
   // *
   CliUx.ux.action.start('Creating files...')
   try {
     // * loop through the scaffold paths & create necessary files & directories
-    for (const [key, path] of Object.entries(_scaffoldPaths)) {
+    for (const [key, path] of Object.entries(_paths)) {
       // *
       const lowerKey = key.toLowerCase()
 
       // * map file contents
-      for (const [pathKey, pathFile] of Object.entries(mapFilesContent)) {
+      for (const [pathKey] of Object.entries(mapFilesContent)) {
         if (lowerKey.includes(pathKey)) {
           if (pathKey === 'pages' && lowerKey === 'pagesapipath') {
             continue
@@ -76,7 +89,7 @@ const generateFromPaths = async (
  */
 const runGenerator = async (
   _generator: string,
-  _path: string
+  _path: string,
 ): Promise<void> => {
   // * check if the function exists
   if (
@@ -95,6 +108,19 @@ const runGenerator = async (
  */
 const getStubContent = async (_stubPath: string): Promise<string> => {
   return filesystem.readFile(_stubPath)
+}
+
+const appcontainersGenerator = async (_path: string): Promise<void> => {
+  try {
+    await filesystem.write({
+      filename: mapFilesContent.appcontainers,
+      path: _path,
+      content: '',
+    })
+  } catch (error) {
+    console.log({error})
+    throw new Error('Unable to create app containers directory')
+  }
 }
 
 /**
@@ -130,10 +156,11 @@ const configsGenerator = async (_path: string): Promise<void> => {
     console.log('Generating configs directory...')
     await filesystem.write({
       filename:
-        _.toLower(_this.refScaffoldPaths.container) + mapFilesContent.configs,
+        _.toLower(_this.refContainersPaths.container) +
+        mapFilesContent.configs.replace('{{ext}}', await checkExt()),
       path: _path,
       content: await getStubContent(
-        path.resolve(__dirname, '../stubs/config/default.stub')
+        path.resolve(PKG_ROOT, 'stubs/config/default.stub'),
       ),
     })
   } catch (error) {
@@ -239,11 +266,11 @@ const stylesGenerator = async (_path: string): Promise<void> => {
     await filesystem.write({
       filename: mapFilesContent.styles.replace(
         '{{container}}',
-        _this.refScaffoldPaths.container.toLowerCase()
+        _this.refContainersPaths.container.toLowerCase(),
       ),
       path: _path,
       content: await getStubContent(
-        path.resolve(__dirname, '../stubs/styles/default.stub')
+        path.resolve(PKG_ROOT, 'stubs/styles/default.stub'),
       ),
     })
   } catch (error) {
@@ -263,34 +290,39 @@ const pagesGenerator = async (_path: string): Promise<void> => {
     // * container stub content
     const containerStubContent = await str.parseStub(
       await getStubContent(
-        path.resolve(__dirname, '../stubs/pages/container.stub')
+        path.resolve(PKG_ROOT, 'stubs/pages/container.stub'),
       ),
-      {containerName: _this.refScaffoldPaths.container},
-      {}
+      {pageClass: _path.slice(_path.lastIndexOf('/')).replace('/', '')},
+      {capitalize: (val: string) => _.capitalize(val)},
     )
 
     // * bootstrap stub content
     const bootstrapStubContent = await str.parseStub(
       await getStubContent(
-        path.resolve(__dirname, '../stubs/pages/bootstrap.stub')
+        path.resolve(PKG_ROOT, 'stubs/pages/bootstrap.stub'),
       ),
-      {containerName: _this.refScaffoldPaths.container},
-      {toLower: (val: string) => _.toLower(val)}
+      {
+        pagePath: _path.split('pages/')[1],
+        pageClass: _path.slice(_path.lastIndexOf('/')).replace('/', ''),
+        sectionName: _this.refContainersPaths.section,
+        containerName: _this.refContainersPaths.container,
+      },
+      {capitalize: (val: string) => _.capitalize(val)},
     )
 
     // * create file for container
     await filesystem.write({
-      filename: mapFilesContent.pages,
-      path: path.resolve(_path, _this.refScaffoldPaths.container.toLowerCase()),
+      filename: mapFilesContent.pages.replace('{{ext}}', await checkExt()),
+      path: _path,
       content: containerStubContent,
     })
 
     // * create file for bootstrap
     await filesystem.write({
-      filename: mapFilesContent.pages,
+      filename: mapFilesContent.pages.replace('{{ext}}', await checkExt()),
       path: path.join(
-        path.resolve(process.cwd(), 'pages'),
-        _this.refScaffoldPaths.container.toLowerCase()
+        path.resolve(_path.slice(0, _path.lastIndexOf('src')), 'pages'),
+        _path.split('pages/')[1],
       ),
       content: bootstrapStubContent,
     })
@@ -307,51 +339,52 @@ const pagesGenerator = async (_path: string): Promise<void> => {
 const pagesApiGenerator = async (_path: string): Promise<void> => {
   try {
     console.log('Generating pages api directory...')
-    // * container stub content
+    // * bootstrap stub content
     const bootstrapStubContent = await str.parseStub(
       await getStubContent(
-        path.resolve(__dirname, '../stubs/pages/api/bootstrap.stub')
+        path.resolve(
+          PKG_ROOT,
+          (await checkExt()) === 't'
+            ? 'stubs/pages/api/ts/bootstrap.stub'
+            : 'stubs/pages/api/bootstrap.stub',
+        ),
       ),
-      {containerName: _this.refScaffoldPaths.container},
-      {toLower: (val: string) => _.toLower(val)}
+      {
+        apiClass: _path.slice(_path.lastIndexOf('/')).replace('/', ''),
+        apiPath: _path.split('pages/api/')[1],
+        sectionName: _this.refContainersPaths.section,
+        containerName: _this.refContainersPaths.container,
+      },
+      {capitalize: (val: string) => _.capitalize(val)},
     )
 
     // * container stub content
     const containerStubContent = await str.parseStub(
       await getStubContent(
-        path.resolve(__dirname, '../stubs/pages/api/container.stub')
+        path.resolve(
+          PKG_ROOT,
+          (await checkExt()) === 't'
+            ? 'stubs/pages/api/ts/container.stub'
+            : 'stubs/pages/api/container.stub',
+        ),
       ),
-      {containerName: _this.refScaffoldPaths.container},
-      {}
+      {apiClass: _path.slice(_path.lastIndexOf('/')).replace('/', '')},
+      {capitalize: (val: string) => _.capitalize(val)},
     )
 
     // * create file for container
     await filesystem.write({
-<<<<<<< HEAD
-      filename: mapFilesContent.api,
-=======
-      filename: mapFilesContent.api.replace(
-        '{{container}}',
-        _this.refScaffoldPaths.container.toLowerCase()
-      ),
->>>>>>> master
-      path: path.resolve(_path, _this.refScaffoldPaths.container.toLowerCase()),
+      filename: mapFilesContent.api.replace('{{ext}}', await checkExt()),
+      path: _path,
       content: containerStubContent,
     })
 
     // * create file for bootstrap
     await filesystem.write({
-<<<<<<< HEAD
-      filename: mapFilesContent.api,
-=======
-      filename: mapFilesContent.api.replace(
-        '{{container}}',
-        _this.refScaffoldPaths.container.toLowerCase()
-      ),
->>>>>>> master
+      filename: mapFilesContent.api.replace('{{ext}}', await checkExt()),
       path: path.join(
-        path.resolve(process.cwd(), 'pages/api'),
-        _this.refScaffoldPaths.container.toLowerCase()
+        path.resolve(_path.slice(0, _path.lastIndexOf('src')), 'pages/api'),
+        _path.split('pages/api/')[1],
       ),
       content: bootstrapStubContent,
     })
@@ -372,4 +405,5 @@ export {
   stylesGenerator,
   pagesGenerator,
   pagesApiGenerator,
+  appcontainersGenerator,
 }

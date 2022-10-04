@@ -52,6 +52,23 @@ const fileExist = (_path: string): boolean => {
 }
 
 /**
+ * Check if directory is not empty
+ * @param _path direcotry path
+ * @returns boolean
+ */
+const isEmptyDir = async (_path: string): Promise<boolean> => {
+  try {
+    const dir = await promises.opendir(_path)
+    const hasFiles = await dir.read()
+    await dir.close()
+
+    return hasFiles === null
+  } catch {
+    return false
+  }
+}
+
+/**
  * Delete a directory that is not empty, same command to `rm -rf`
  * @param _path path to delete
  * @returns void
@@ -60,4 +77,4 @@ const forceDelete = (_path: string): void => {
   rmSync(_path, {recursive: true, force: true})
 }
 
-export {write, fileExist, readFile, forceDelete}
+export {write, fileExist, readFile, isEmptyDir, forceDelete}
