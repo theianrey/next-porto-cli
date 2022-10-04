@@ -114,4 +114,5 @@ node_modules
 oclif.manifest.json
 /src
 /test
-/bin/dev*
+/bin/dev
+/bin/dev.cmd
