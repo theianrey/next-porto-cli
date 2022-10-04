@@ -1,7 +1,7 @@
 /* eslint-disable node/no-extraneous-import */
 import 'module-alias/register'
 import * as Listr from 'listr'
-import * as execa from 'execa'
+import {execa} from 'execa'
 import * as path from 'node:path'
 import * as filesystem from '@helpers/filesystem'
 import {CliUx, Command, Flags} from '@oclif/core'
@@ -102,7 +102,7 @@ export default class Project extends Command {
           }
 
           return execa('npx', execArgs)
-            .then(async _result => {
+            .then(async () => {
               _ctx.nextInit = true
             })
             .catch(() => {
