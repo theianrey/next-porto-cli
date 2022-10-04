@@ -58,7 +58,7 @@ export default class Project extends Command {
     return new Listr([
       {
         title: 'File checks...',
-        task: async (_ctx) => {
+        task: async _ctx => {
           const projectDirExists = filesystem.fileExist(
             path.resolve('.', _args.projectName),
           )
@@ -102,15 +102,15 @@ export default class Project extends Command {
           }
 
           return execa('npx', execArgs)
-            .then(async (_result) => {
+            .then(async _result => {
               _ctx.nextInit = true
             })
-            .catch((error) => {
+            .catch(() => {
               _ctx.nextInit = false
               _task.skip(_task.output)
             })
         },
-        enabled: (ctx) => ctx.fileChecks === true,
+        enabled: ctx => ctx.fileChecks === true,
       },
       {
         title: 'Scaffolding your app...',
@@ -126,14 +126,14 @@ export default class Project extends Command {
 
           _ctx.scaffolding = true
         },
-        enabled: (ctx) => ctx.nextInit === true,
+        enabled: ctx => ctx.nextInit === true,
       },
       {
         title: 'Finishing up...',
-        task: async (_ctx, task) => {
+        task: async _ctx => {
           await generateConfig(path.resolve(getBasePath(_args.projectName)))
         },
-        enabled: (_ctx) => _ctx.scaffolding === true,
+        enabled: _ctx => _ctx.scaffolding === true,
       },
     ])
   }
@@ -160,6 +160,6 @@ export default class Project extends Command {
     Project.tasks = this.initTaskList(args, flags)
 
     // * run the task list
-    await Project.tasks.run().catch((error) => this.error(error.message))
+    await Project.tasks.run().catch(error => this.error(error.message))
   }
 }
