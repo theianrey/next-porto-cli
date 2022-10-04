@@ -1,0 +1,7 @@
+import * as {{apiClass|capitalize}}Api from "@Containers/{{sectionName}}/{{containerName}}/pages/api/{{apiPath}}";
+import type { NextApiRequest, NextApiResponse } from 'next'
+
+export default function handler(_req: NextApiRequest, _res: NextApiResponse) {
+  // * Run your api
+  return {{apiClass|capitalize}}Api.run(_req, _res);
+}

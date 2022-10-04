@@ -7,7 +7,9 @@ import 'module-alias/register'
 import * as _ from 'lodash'
 import * as path from 'node:path'
 import {CliUx} from '@oclif/core'
+import {getPath, PKG_ROOT} from '@helpers/path'
 import * as str from '@helpers/string'
+import {checkConfigFile} from './config'
 import * as filesystem from '@helpers/filesystem'
 import type {ContainerPathsType, PagePathType} from '@helpers/path'
 
@@ -21,14 +23,20 @@ const _this: any = this
 const mapFilesContent = {
   appcontainers: '.gitkeep',
   assets: '.gitkeep',
-  configs: '-config.js',
+  configs: '-config.{{ext}}s',
   components: '.gitkeep',
   helpers: '.gitkeep',
   hooks: '.gitkeep',
   actions: '.gitkeep',
   styles: '{{container}}.css',
-  pages: 'index.jsx',
-  api: 'index.js',
+  pages: 'index.{{ext}}sx',
+  api: 'index.{{ext}}s',
+}
+
+const checkExt = async (): Promise<string> => {
+  const configFile = await checkConfigFile(path.resolve(getPath('src')))
+
+  return configFile.toLowerCase().includes('jsonconfig') ? 'j' : 't'
 }
 
 /**
@@ -148,10 +156,11 @@ const configsGenerator = async (_path: string): Promise<void> => {
     console.log('Generating configs directory...')
     await filesystem.write({
       filename:
-        _.toLower(_this.refContainersPaths.container) + mapFilesContent.configs,
+        _.toLower(_this.refContainersPaths.container) +
+        mapFilesContent.configs.replace('{{ext}}', await checkExt()),
       path: _path,
       content: await getStubContent(
-        path.resolve(__dirname, '../stubs/config/default.stub'),
+        path.resolve(PKG_ROOT, 'stubs/config/default.stub'),
       ),
     })
   } catch (error) {
@@ -261,7 +270,7 @@ const stylesGenerator = async (_path: string): Promise<void> => {
       ),
       path: _path,
       content: await getStubContent(
-        path.resolve(__dirname, '../stubs/styles/default.stub'),
+        path.resolve(PKG_ROOT, 'stubs/styles/default.stub'),
       ),
     })
   } catch (error) {
@@ -281,7 +290,7 @@ const pagesGenerator = async (_path: string): Promise<void> => {
     // * container stub content
     const containerStubContent = await str.parseStub(
       await getStubContent(
-        path.resolve(__dirname, '../stubs/pages/container.stub'),
+        path.resolve(PKG_ROOT, 'stubs/pages/container.stub'),
       ),
       {pageClass: _path.slice(_path.lastIndexOf('/')).replace('/', '')},
       {capitalize: (val: string) => _.capitalize(val)},
@@ -290,7 +299,7 @@ const pagesGenerator = async (_path: string): Promise<void> => {
     // * bootstrap stub content
     const bootstrapStubContent = await str.parseStub(
       await getStubContent(
-        path.resolve(__dirname, '../stubs/pages/bootstrap.stub'),
+        path.resolve(PKG_ROOT, 'stubs/pages/bootstrap.stub'),
       ),
       {
         pagePath: _path.split('pages/')[1],
@@ -303,14 +312,14 @@ const pagesGenerator = async (_path: string): Promise<void> => {
 
     // * create file for container
     await filesystem.write({
-      filename: mapFilesContent.pages,
+      filename: mapFilesContent.pages.replace('{{ext}}', await checkExt()),
       path: _path,
       content: containerStubContent,
     })
 
     // * create file for bootstrap
     await filesystem.write({
-      filename: mapFilesContent.pages,
+      filename: mapFilesContent.pages.replace('{{ext}}', await checkExt()),
       path: path.join(
         path.resolve(_path.slice(0, _path.lastIndexOf('src')), 'pages'),
         _path.split('pages/')[1],
@@ -330,10 +339,15 @@ const pagesGenerator = async (_path: string): Promise<void> => {
 const pagesApiGenerator = async (_path: string): Promise<void> => {
   try {
     console.log('Generating pages api directory...')
-    // * container stub content
+    // * bootstrap stub content
     const bootstrapStubContent = await str.parseStub(
       await getStubContent(
-        path.resolve(__dirname, '../stubs/pages/api/bootstrap.stub'),
+        path.resolve(
+          PKG_ROOT,
+          (await checkExt()) === 't'
+            ? 'stubs/pages/api/ts/bootstrap.stub'
+            : 'stubs/pages/api/bootstrap.stub',
+        ),
       ),
       {
         apiClass: _path.slice(_path.lastIndexOf('/')).replace('/', ''),
@@ -347,7 +361,12 @@ const pagesApiGenerator = async (_path: string): Promise<void> => {
     // * container stub content
     const containerStubContent = await str.parseStub(
       await getStubContent(
-        path.resolve(__dirname, '../stubs/pages/api/container.stub'),
+        path.resolve(
+          PKG_ROOT,
+          (await checkExt()) === 't'
+            ? 'stubs/pages/api/ts/container.stub'
+            : 'stubs/pages/api/container.stub',
+        ),
       ),
       {apiClass: _path.slice(_path.lastIndexOf('/')).replace('/', '')},
       {capitalize: (val: string) => _.capitalize(val)},
@@ -355,14 +374,14 @@ const pagesApiGenerator = async (_path: string): Promise<void> => {
 
     // * create file for container
     await filesystem.write({
-      filename: mapFilesContent.api,
+      filename: mapFilesContent.api.replace('{{ext}}', await checkExt()),
       path: _path,
       content: containerStubContent,
     })
 
     // * create file for bootstrap
     await filesystem.write({
-      filename: mapFilesContent.api,
+      filename: mapFilesContent.api.replace('{{ext}}', await checkExt()),
       path: path.join(
         path.resolve(_path.slice(0, _path.lastIndexOf('src')), 'pages/api'),
         _path.split('pages/api/')[1],

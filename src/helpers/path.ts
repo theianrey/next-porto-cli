@@ -10,7 +10,7 @@ import * as _ from 'lodash'
 /**
  * ----------------------------------------------------------------------
  */
-const distPath = path.dirname(require.main?.filename as string)
+const distPath = path.dirname(__filename as string)
 export const PKG_ROOT = path.join(distPath, '../')
 
 // * context of parent this
