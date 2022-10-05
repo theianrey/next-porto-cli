@@ -88,38 +88,6 @@ export default class Page extends Command {
       // * api
       const api = await CliUx.ux.confirm('Would you like to include api page?')
 
-      // * force delete override
-      if (
-        fileExist(path.resolve(getPath('pages', {section, container}), page))
-      ) {
-        force = await CliUx.ux.confirm(
-          `Do you want to override "${page}" page's directory and all of it's content?`,
-        )
-
-        // * force delete
-        if (force) {
-          // * container page
-          forceDelete(
-            path.resolve(
-              getPath('pages', {section, container}),
-              container.toLowerCase(),
-              page,
-            ),
-          )
-
-          // * container api page
-          forceDelete(
-            path.resolve(
-              getPath('api', {section, container}),
-              container.toLowerCase(),
-              page,
-            ),
-          )
-        } else {
-          this.exit(0)
-        }
-      }
-
       // * override flags k/v
       flags = {
         section,
@@ -197,7 +165,7 @@ export default class Page extends Command {
       }
     }
 
-    // *
+    // * generate page paths
     generateFromPaths(pagePath)
   }
 }
