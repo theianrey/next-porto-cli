@@ -13,7 +13,7 @@ $ npm install -g next-porto-cli
 $ npc COMMAND
 running command...
 $ npc (--version|--version|-v)
-next-porto-cli/0.2.0 darwin-x64 node-v14.20.0
+next-porto-cli/0.2.3 darwin-x64 node-v14.20.0
 $ npc --help [COMMAND]
 USAGE
   $ npc COMMAND
@@ -46,7 +46,7 @@ DESCRIPTION
   Create a Next.js application with porto architechture.
 ```
 
-_See code: [dist/commands/create/project.ts](https://github.com/theianrey/next-porto-cli/blob/v0.2.0/dist/commands/create/project.ts)_
+_See code: [dist/commands/create/project.ts](https://github.com/theianrey/next-porto-cli/blob/v0.2.3/dist/commands/create/project.ts)_
 
 ## `npc generate:container`
 
@@ -65,7 +65,7 @@ DESCRIPTION
   Create a container
 ```
 
-_See code: [dist/commands/generate/container.ts](https://github.com/theianrey/next-porto-cli/blob/v0.2.0/dist/commands/generate/container.ts)_
+_See code: [dist/commands/generate/container.ts](https://github.com/theianrey/next-porto-cli/blob/v0.2.3/dist/commands/generate/container.ts)_
 
 ## `npc generate:page`
 
@@ -86,7 +86,7 @@ DESCRIPTION
   Create a page & page api files for container
 ```
 
-_See code: [dist/commands/generate/page.ts](https://github.com/theianrey/next-porto-cli/blob/v0.2.0/dist/commands/generate/page.ts)_
+_See code: [dist/commands/generate/page.ts](https://github.com/theianrey/next-porto-cli/blob/v0.2.3/dist/commands/generate/page.ts)_
 
 ## `npc help [COMMAND]`
 
