@@ -1,7 +1,7 @@
 /* eslint-disable node/no-extraneous-import */
 import 'module-alias/register'
 import * as Listr from 'listr'
-import {execa} from 'execa'
+import {execa} from '@esm2cjs/execa'
 import * as path from 'node:path'
 import * as filesystem from '@helpers/filesystem'
 import {CliUx, Command, Flags} from '@oclif/core'
