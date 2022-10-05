@@ -18,7 +18,7 @@
   ],
   "dependencies": {
     "@esm2cjs/execa": "^6.1.1-cjs.1",
-    "@oclif/core": "^1.13.10",
+    "@oclif/core": "^1.16.4",
     "@oclif/plugin-help": "^5",
     "@oclif/plugin-plugins": "^2.0.1",
     "@types/listr": "^0.14.4",
