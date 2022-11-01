@@ -115,14 +115,14 @@ const generateJsConfig = async (_projectPath: string): Promise<void> => {
     await filesystem.write({
       filename: 'jsconfig.json',
       path: path.resolve(_projectPath),
-      content: JSON.stringify(parsedConfigFile),
+      content: JSON.stringify(parsedConfigFile, null, 2),
     })
   } else {
     // * create new config file
     await filesystem.write({
       filename: 'jsconfig.json',
       path: path.resolve(_projectPath),
-      content: JSON.stringify(DEFAULT_CONFIG),
+      content: JSON.stringify(DEFAULT_CONFIG, null, 2),
     })
   }
 }
@@ -167,14 +167,14 @@ const generateTsConfig = async (_projectPath: string): Promise<void> => {
     await filesystem.write({
       filename: 'tsconfig.json',
       path: path.resolve(_projectPath),
-      content: JSON.stringify(parsedConfigFile),
+      content: JSON.stringify(parsedConfigFile, null, 2),
     })
   } else {
     // * create new config file
     await filesystem.write({
       filename: 'tsconfig.json',
       path: path.resolve(_projectPath),
-      content: JSON.stringify(DEFAULT_CONFIG),
+      content: JSON.stringify(DEFAULT_CONFIG, null, 2),
     })
   }
 }

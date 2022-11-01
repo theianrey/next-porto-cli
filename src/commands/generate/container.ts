@@ -1,11 +1,11 @@
 /* eslint-disable node/no-extraneous-import */
 import 'module-alias/register'
 import * as _ from 'lodash'
-import {Command, CliUx, Flags} from '@oclif/core'
-import {generateFromPaths} from '@generators/index'
-import {containerScafffolding} from '@helpers/path'
-import type {ContainerPathsType} from '@helpers/path'
-import {fileExist, forceDelete} from '@helpers/filesystem'
+import { Command, CliUx, Flags } from '@oclif/core'
+import { generateFromPaths } from '@generators/index'
+import { containerScafffolding } from '@helpers/path'
+import type { ContainerPathsType } from '@helpers/path'
+import { fileExist, forceDelete } from '@helpers/filesystem'
 
 /**
  * Container command class
@@ -46,7 +46,7 @@ export default class Container extends Command {
     let scaffoldPaths: ContainerPathsType | null = null
 
     // * get user input for flags
-    const {flags} = await this.parse(Container)
+    const { flags } = await this.parse(Container)
 
     // * if container is missing in the command flag
     // * run manual prompt

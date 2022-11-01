@@ -165,7 +165,7 @@ const getPath = (_funcName: string, _params?: ParamsType): string => {
  */
 const getBasePath = (_path?: string): string => {
   return _path
-    ? path.join(process.cwd(), '/', str.trimSlashes(_path))
+    ? path.join(process.cwd(), path.sep, str.trimSlashes(_path))
     : process.cwd()
 }
 
@@ -182,7 +182,7 @@ const getSrcPath = (): string => {
  * @returns string
  */
 const getAppContainersPath = (): string => {
-  return path.join(getSrcPath(), '/Containers')
+  return path.join(getSrcPath(), `${path.sep}Containers`)
 }
 
 /**
@@ -191,7 +191,7 @@ const getAppContainersPath = (): string => {
  * @returns string
  */
 const getShipPath = (_projectDir?: string): string => {
-  return path.join(getBasePath(_projectDir), 'src', '/Ship')
+  return path.join(getBasePath(_projectDir), 'src', `${path.sep}Ship`)
 }
 
 /**
@@ -200,7 +200,7 @@ const getShipPath = (_projectDir?: string): string => {
  * @returns string
  */
 const getSectionPath = (_section: string): string => {
-  return path.join(getAppContainersPath(), '/', str.trimSlashes(_section))
+  return path.join(getAppContainersPath(), path.sep, str.trimSlashes(_section))
 }
 
 /**
@@ -210,7 +210,7 @@ const getSectionPath = (_section: string): string => {
  * @returns string
  */
 const getContainerPath = (_section: string, _container: string): string => {
-  return path.join(getSectionPath(_section), '/', str.trimSlashes(_container))
+  return path.join(getSectionPath(_section), path.sep, str.trimSlashes(_container))
 }
 
 /**
@@ -220,7 +220,7 @@ const getContainerPath = (_section: string, _container: string): string => {
  * @returns string
  */
 const getPagesPath = (_section: string, _container: string): string => {
-  return path.join(getContainerPath(_section, _container), '/pages')
+  return path.join(getContainerPath(_section, _container), `${path.sep}pages`)
 }
 
 /**
@@ -230,7 +230,7 @@ const getPagesPath = (_section: string, _container: string): string => {
  * @returns string
  */
 const getApiPath = (_section: string, _container: string): string => {
-  return path.join(getPagesPath(_section, _container), '/api')
+  return path.join(getPagesPath(_section, _container), `${path.sep}api`)
 }
 
 /**
@@ -240,7 +240,7 @@ const getApiPath = (_section: string, _container: string): string => {
  * @returns string
  */
 const getAssetsPath = (_section: string, _container: string): string => {
-  return path.join(getContainerPath(_section, _container), '/assets')
+  return path.join(getContainerPath(_section, _container), `${path.sep}assets`)
 }
 
 /**
@@ -250,7 +250,7 @@ const getAssetsPath = (_section: string, _container: string): string => {
  * @returns string
  */
 const getConfigsPath = (_section: string, _container: string): string => {
-  return path.join(getContainerPath(_section, _container), '/configs')
+  return path.join(getContainerPath(_section, _container), `${path.sep}configs`)
 }
 
 /**
@@ -260,7 +260,7 @@ const getConfigsPath = (_section: string, _container: string): string => {
  * @returns string
  */
 const getComponentsPath = (_section: string, _container: string): string => {
-  return path.join(getContainerPath(_section, _container), '/components')
+  return path.join(getContainerPath(_section, _container), `${path.sep}components`)
 }
 
 /**
@@ -270,7 +270,7 @@ const getComponentsPath = (_section: string, _container: string): string => {
  * @returns string
  */
 const getHelpersPath = (_section: string, _container: string): string => {
-  return path.join(getContainerPath(_section, _container), '/helpers')
+  return path.join(getContainerPath(_section, _container), `${path.sep}helpers`)
 }
 
 /**
@@ -280,7 +280,7 @@ const getHelpersPath = (_section: string, _container: string): string => {
  * @returns string
  */
 const getHooksPath = (_section: string, _container: string): string => {
-  return path.join(getContainerPath(_section, _container), '/hooks')
+  return path.join(getContainerPath(_section, _container), `${path.sep}hooks`)
 }
 
 /**
@@ -290,7 +290,7 @@ const getHooksPath = (_section: string, _container: string): string => {
  * @returns string
  */
 const getActionsPath = (_section: string, _container: string): string => {
-  return path.join(getContainerPath(_section, _container), '/actions')
+  return path.join(getContainerPath(_section, _container), `${path.sep}actions`)
 }
 
 /**
@@ -300,7 +300,7 @@ const getActionsPath = (_section: string, _container: string): string => {
  * @returns string
  */
 const getStylesPath = (_section: string, _container: string): string => {
-  return path.join(getContainerPath(_section, _container), '/styles')
+  return path.join(getContainerPath(_section, _container), `${path.sep}styles`)
 }
 
 export const APP_ROOT = path.resolve(getBasePath())
