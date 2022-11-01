@@ -6,12 +6,12 @@
 import 'module-alias/register'
 import * as _ from 'lodash'
 import * as path from 'node:path'
-import {CliUx} from '@oclif/core'
-import {getPath, PKG_ROOT} from '@helpers/path'
+import { CliUx } from '@oclif/core'
+import { getPath, PKG_ROOT } from '@helpers/path'
 import * as str from '@helpers/string'
-import {checkConfigFile} from './config'
+import { checkConfigFile } from './config'
 import * as filesystem from '@helpers/filesystem'
-import type {ContainerPathsType, PagePathType} from '@helpers/path'
+import type { ContainerPathsType, PagePathType } from '@helpers/path'
 
 // * Objects
 // * Types
@@ -74,7 +74,7 @@ const generateFromPaths = async (
     }
   } catch (error) {
     CliUx.ux.action.stop('Error occured.')
-    console.log({error})
+    console.log({ error })
   }
 
   // *
@@ -98,6 +98,10 @@ const runGenerator = async (
   ) {
     // * run generator
     await _this[_generator](_path)
+    // * test for pages & api page generators only
+    // if (['pagesGenerator', 'pagesApiGenerator'].includes(_generator)) {
+    //   await _this[_generator](_path);
+    // }
   }
 }
 
@@ -118,7 +122,7 @@ const appcontainersGenerator = async (_path: string): Promise<void> => {
       content: '',
     })
   } catch (error) {
-    console.log({error})
+    console.log({ error })
     throw new Error('Unable to create app containers directory')
   }
 }
@@ -139,7 +143,7 @@ const assetsGenerator = async (_path: string): Promise<void> => {
       content: '',
     })
   } catch (error) {
-    console.log({error})
+    console.log({ error })
     throw new Error('Unable to create assets directory')
   }
 }
@@ -160,11 +164,11 @@ const configsGenerator = async (_path: string): Promise<void> => {
         mapFilesContent.configs.replace('{{ext}}', await checkExt()),
       path: _path,
       content: await getStubContent(
-        path.resolve(PKG_ROOT, 'stubs/config/default.stub'),
+        path.resolve(PKG_ROOT, `stubs${path.sep}config${path.sep}default.stub`),
       ),
     })
   } catch (error) {
-    console.log({error})
+    console.log({ error })
     throw new Error('Unable to create configs directory')
   }
 }
@@ -185,7 +189,7 @@ const componentsGenerator = async (_path: string): Promise<void> => {
       content: '',
     })
   } catch (error) {
-    console.log({error})
+    console.log({ error })
     throw new Error('Unable to create components directory')
   }
 }
@@ -206,7 +210,7 @@ const helpersGenerator = async (_path: string): Promise<void> => {
       content: '',
     })
   } catch (error) {
-    console.log({error})
+    console.log({ error })
     throw new Error('Unable to create helpers directory')
   }
 }
@@ -227,7 +231,7 @@ const hooksGenerator = async (_path: string): Promise<void> => {
       content: '',
     })
   } catch (error) {
-    console.log({error})
+    console.log({ error })
     throw new Error('Unable to create hooks directory')
   }
 }
@@ -248,7 +252,7 @@ const actionsGenerator = async (_path: string): Promise<void> => {
       content: '',
     })
   } catch (error) {
-    console.log({error})
+    console.log({ error })
     throw new Error('Unable to create hooks directory')
   }
 }
@@ -270,11 +274,11 @@ const stylesGenerator = async (_path: string): Promise<void> => {
       ),
       path: _path,
       content: await getStubContent(
-        path.resolve(PKG_ROOT, 'stubs/styles/default.stub'),
+        path.resolve(PKG_ROOT, `stubs${path.sep}styles${path.sep}default.stub`),
       ),
     })
   } catch (error) {
-    console.log({error})
+    console.log({ error })
     throw new Error('Unable to create hooks directory')
   }
 }
@@ -290,24 +294,24 @@ const pagesGenerator = async (_path: string): Promise<void> => {
     // * container stub content
     const containerStubContent = await str.parseStub(
       await getStubContent(
-        path.resolve(PKG_ROOT, 'stubs/pages/container.stub'),
+        path.resolve(PKG_ROOT, `stubs${path.sep}pages${path.sep}container.stub`),
       ),
-      {pageClass: _path.slice(_path.lastIndexOf('/')).replace('/', '')},
-      {capitalize: (val: string) => _.capitalize(val)},
+      { pageClass: _path.slice(_path.lastIndexOf(path.sep)).replace(path.sep, '') },
+      { capitalize: (val: string) => _.capitalize(val) },
     )
 
     // * bootstrap stub content
     const bootstrapStubContent = await str.parseStub(
       await getStubContent(
-        path.resolve(PKG_ROOT, 'stubs/pages/bootstrap.stub'),
+        path.resolve(PKG_ROOT, `stubs${path.sep}pages${path.sep}bootstrap.stub`),
       ),
       {
-        pagePath: _path.split('pages/')[1],
-        pageClass: _path.slice(_path.lastIndexOf('/')).replace('/', ''),
+        pagePath: _path.split('pages' + path.sep)[1],
+        pageClass: _path.slice(_path.lastIndexOf(path.sep)).replace(path.sep, ''),
         sectionName: _this.refContainersPaths.section,
         containerName: _this.refContainersPaths.container,
       },
-      {capitalize: (val: string) => _.capitalize(val)},
+      { capitalize: (val: string) => _.capitalize(val) },
     )
 
     // * create file for container
@@ -322,12 +326,12 @@ const pagesGenerator = async (_path: string): Promise<void> => {
       filename: mapFilesContent.pages.replace('{{ext}}', await checkExt()),
       path: path.join(
         path.resolve(_path.slice(0, _path.lastIndexOf('src')), 'pages'),
-        _path.split('pages/')[1],
+        _path.split('pages' + path.sep)[1],
       ),
       content: bootstrapStubContent,
     })
   } catch (error) {
-    console.log({error})
+    console.log({ error })
   }
 }
 
@@ -345,17 +349,17 @@ const pagesApiGenerator = async (_path: string): Promise<void> => {
         path.resolve(
           PKG_ROOT,
           (await checkExt()) === 't'
-            ? 'stubs/pages/api/ts/bootstrap.stub'
-            : 'stubs/pages/api/bootstrap.stub',
+            ? `stubs${path.sep}pages${path.sep}api${path.sep}ts${path.sep}bootstrap.stub`
+            : `stubs${path.sep}pages${path.sep}api${path.sep}bootstrap.stub`,
         ),
       ),
       {
-        apiClass: _path.slice(_path.lastIndexOf('/')).replace('/', ''),
-        apiPath: _path.split('pages/api/')[1],
+        apiClass: _path.slice(_path.lastIndexOf(path.sep)).replace(path.sep, ''),
+        apiPath: _path.split(`pages${path.sep}api${path.sep}`)[1],
         sectionName: _this.refContainersPaths.section,
         containerName: _this.refContainersPaths.container,
       },
-      {capitalize: (val: string) => _.capitalize(val)},
+      { capitalize: (val: string) => _.capitalize(val) },
     )
 
     // * container stub content
@@ -364,12 +368,12 @@ const pagesApiGenerator = async (_path: string): Promise<void> => {
         path.resolve(
           PKG_ROOT,
           (await checkExt()) === 't'
-            ? 'stubs/pages/api/ts/container.stub'
-            : 'stubs/pages/api/container.stub',
+            ? `stubs${path.sep}pages${path.sep}api${path.sep}ts${path.sep}container.stub`
+            : `stubs${path.sep}pages${path.sep}api${path.sep}container.stub`,
         ),
       ),
-      {apiClass: _path.slice(_path.lastIndexOf('/')).replace('/', '')},
-      {capitalize: (val: string) => _.capitalize(val)},
+      { apiClass: _path.slice(_path.lastIndexOf(path.sep)).replace(path.sep, '') },
+      { capitalize: (val: string) => _.capitalize(val) },
     )
 
     // * create file for container
@@ -383,13 +387,13 @@ const pagesApiGenerator = async (_path: string): Promise<void> => {
     await filesystem.write({
       filename: mapFilesContent.api.replace('{{ext}}', await checkExt()),
       path: path.join(
-        path.resolve(_path.slice(0, _path.lastIndexOf('src')), 'pages/api'),
-        _path.split('pages/api/')[1],
+        path.resolve(_path.slice(0, _path.lastIndexOf('src')), `pages${path.sep}api`),
+        _path.split(`pages${path.sep}api${path.sep}`)[1],
       ),
       content: bootstrapStubContent,
     })
   } catch (error) {
-    console.log({error})
+    console.log({ error })
   }
 }
 
