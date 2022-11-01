@@ -1,6 +1,6 @@
 {
   "name": "next-porto-cli",
-  "version": "0.2.4",
+  "version": "0.2.5",
   "description": "A cli for next.js to scaffold your application using porto architecture",
   "author": "Ian Rey Gumba",
   "bin": {
